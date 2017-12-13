@@ -1,0 +1,24 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-console": {
+      "PACKAGE_NAME": "io.ticketcoin.tkverifier"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "io.ticketcoin.tkverifier"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "io.ticketcoin.tkverifier"
+    },
+    "phonegap-plugin-barcodescanner": {
+      "PACKAGE_NAME": "io.ticketcoin.tkverifier"
+    }
+  },
+  "dependent_plugins": {}
+}
