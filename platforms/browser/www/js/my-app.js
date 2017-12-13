@@ -80,6 +80,5 @@ $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
 
     function handleResult(result){
         console.log( result.url);
-
-       
+        $(".guguImage").attr('src', result.url);
     }
