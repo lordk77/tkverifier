@@ -18,6 +18,9 @@
     },
     "phonegap-plugin-barcodescanner": {
       "PACKAGE_NAME": "io.ticketcoin.tkverifier"
+    },
+    "cordova-sqlite-storage": {
+      "PACKAGE_NAME": "io.ticketcoin.tkverifier"
     }
   },
   "dependent_plugins": {}
