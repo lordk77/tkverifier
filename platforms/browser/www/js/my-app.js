@@ -1,7 +1,7 @@
 // Initialize app
 var myApp = new Framework7();
 
-var tkadminURL="http://10.1.0.27:8080/tkadmin";
+var tkadminURL="http://172.20.10.4:8080/tkadmin";
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
@@ -94,14 +94,20 @@ var db = null;
  
 document.addEventListener('deviceready', function() {
 	console.log('initDb ');
+	
   initDb();
 });
 
 function initDb()
 {
-	myApp.alert('Initdb');
-	 db = window.sqlitePlugin.openDatabase(db_params, function (db) {
-
+	myApp.alert('Iccxxnbbitd2b');
+	
+	  window.sqlitePlugin.selfTest(function() {
+    myApp.alert('SELF test OK');
+  });
+	
+	db =window.sqlitePlugin.openDatabase({name: 'my.db', location: 'default'}, function (db) {
+myApp.alert('Initdddd3b');
 		db.transaction(function (tx) {
 			tx.executeSql('CREATE TABLE IF NOT EXISTS event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId, deletable)');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS ticketCategory (ticketCategoryUUID,description,price,currency, deletable)');
@@ -113,6 +119,7 @@ function initDb()
 		}, function () {
 			console.log('transaction ok');
 			myApp.alert('Initdb ok');
+			fetchEvents(0);
 			//closeDB();
 		});
 
@@ -120,13 +127,14 @@ function initDb()
 		console.log('Open database ERROR: ' + JSON.stringify(error));
 		myApp.alert('Initdb error' + JSON.stringify(error));
 	});
+	
 }
 
 
 
 function fetchEvents(lastUpdate)
 {
-
+myApp.alert('fech '+ tkadminURL + "rest/event/search/"+(lastUpdate?lastUpdate:0));
 	  $.ajax({
         url: tkadminURL + "rest/event/search/"+(lastUpdate?lastUpdate:0),
         success: updateEvents
