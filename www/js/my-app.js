@@ -1,7 +1,7 @@
 // Initialize app
 var myApp = new Framework7();
 
-var tkadminURL="http://172.20.10.4:8080/tkadmin";
+var tkadminURL="http://10.1.0.27:8080/tkadmin";
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
@@ -53,32 +53,6 @@ console.log(data);
 
 
 
-
-
-// Option 2. Using one 'pageInit' event handler for all pages:
-$$(document).on('pageInit', function (e) {
-    // Get page data from event data
-    var page = e.detail.page;
-
-    if (page.name === 'about') {
-        // Following code will be executed for page with data-page attribute equal to "about"
-        myApp.alert('Here comes About page');
-    }
-})
-
-// Option 2. Using live 'pageInit' event handlers for each page
-$$(document).on('pageInit', '.page[data-page="about"]', function (e) {
-    // Following code will be executed for page with data-page attribute equal to "about"
-    myApp.alert('Here comes About page');
-})
-
-
-
-
-
-
-    
-
     function handleResult(result){
         console.log( result.url);
         $(".guguImage").attr('src', result.url);
@@ -87,127 +61,89 @@ $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
 	
 	
 	
-	
-	var db_params = { name: 'tkverifier.db', location: 'default' };
+	// Wait for PhoneGap to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
 
-var db = null;
- 
-document.addEventListener('deviceready', function() {
-	console.log('initDb ');
-	
-  initDb();
-});
 
-function initDb()
-{
-	myApp.alert('Iccxxnbbitd2b');
+    // PhoneGap is ready
+    //
+    function onDeviceReady() {
+        var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+        db.transaction(createDB, errorCB, successCB);
+    }
+
+    // Populate the database 
+    //
+    function createDB(tx) {
+		tx.executeSql('DROP TABLE IF EXISTS event');
+		tx.executeSql('DROP TABLE IF EXISTS ticketCategory');
+		tx.executeSql('DROP TABLE IF EXISTS ticket');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId, deletable)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS ticketCategory (ticketCategoryUUID,description,price,currency, deletable)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS ticket (ticketUUID,date)');	
+    }
+
+    // Transaction error callback
+    //
+    function errorCB(tx, err) {
+        myApp.alert("Error processing SQL: "+err);
+    }
+
+    // Transaction success callback
+    //
+    function successCB() {
+        myApp.alert("success!");
+		fetchData();
+    }
 	
-	  window.sqlitePlugin.selfTest(function() {
-    myApp.alert('SELF test OK');
-  });
-	
-	db =window.sqlitePlugin.openDatabase({name: 'my.db', location: 'default'}, function (db) {
-myApp.alert('Initdddd3b');
-		db.transaction(function (tx) {
-			tx.executeSql('CREATE TABLE IF NOT EXISTS event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId, deletable)');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS ticketCategory (ticketCategoryUUID,description,price,currency, deletable)');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS ticket (ticketUUID,date)');
-		}, function (error) {
-			console.log('transaction error: ' + error.message);
-			myApp.alert('Initdb ko');
-			//closeDB();
-		}, function () {
-			console.log('transaction ok');
-			myApp.alert('Initdb ok');
-			fetchEvents(0);
-			//closeDB();
+
+	function fetchData()
+	{
+		$.ajax({
+			url: tkadminURL + "rest/event/search/0",
+			success: updateEvents
 		});
+	}	
 
-	}, function (error) {
-		console.log('Open database ERROR: ' + JSON.stringify(error));
-		myApp.alert('Initdb error' + JSON.stringify(error));
-	});
+
 	
-}
-
-
-
-function fetchEvents(lastUpdate)
-{
-myApp.alert('fech '+ tkadminURL + "rest/event/search/"+(lastUpdate?lastUpdate:0));
-	  $.ajax({
-        url: tkadminURL + "rest/event/search/"+(lastUpdate?lastUpdate:0),
-        success: updateEvents
-    });
-}
-
-function updateEvents(result)
-{
-var db = window.sqlitePlugin.openDatabase(db_params, function (db) {
-	db.transaction(function (tx) {
-	
-	var batchQuery = [];
+	function updateEvents(result)
+	{
+	    var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+        db.transaction(_updateEvents, result, errorCB, successCB);
+	}
 	
 	
-		batchQuery[batchQuery.length] = 'UPDATE event set deletable = 1';
-		batchQuery[batchQuery.length] = 'UPDATE ticketCategory set deletable = 1';
-			
+	function _updateEvents(tx, result)
+	{
+	
+		var batchQuery = [];
+	
+		tx.executeSql('UPDATE event set deletable = 1');
+		tx.executeSql('UPDATE ticketCategory set deletable = 1');
+
 		for(var i =0; i < result.length; i++)
 		{
-			batchQuery[batchQuery.length] = ['INSERT INTO event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId) values (?,?,?,?,?,?)',[result[i].eventUUID,result[i].name,result[i].description,result[i].imageUUID,result[i].artist,result[i].updatedOn,result[i].organizationId]];
+			tx.executeSql(['INSERT INTO event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId) values (?,?,?,?,?,?)',[result[i].eventUUID,result[i].name,result[i].description,result[i].imageUUID,result[i].artist,result[i].updatedOn,result[i].organizationId]]);
 			
 			for(var j =0; result[i].ticketCategories && j < result[i].ticketCategories; j++)
 			{
-				batchQuery[batchQuery.length] = ['INSERT INTO ticketCategory (ticketCategoryUUID,description,price,currency) values (?,?,?,?)',[result[i][j].ticketCategoryUUID,result[i][j].description,result[i][j].price,result[i][j].currency]];
+				tx.executeSql(['INSERT INTO ticketCategory (ticketCategoryUUID,description,price,currency) values (?,?,?,?)',[result[i][j].ticketCategoryUUID,result[i][j].description,result[i][j].price,result[i][j].currency]]);
 			}
 		}
-		
-		batchQuery[batchQuery.length] = 'DELETE FROM event where deletable = 1';
-		batchQuery[batchQuery.length] = 'DELETE FROM ticketCategory where deletable = 1';
-		
+
+		tx.executeSql('DELETE FROM event where deletable = 1');
+		tx.executeSql('DELETE FROM ticketCategory where deletable = 1');
+	
+		myApp.alert("success!!!!!!");
 		
 
-  
-		
-		db.sqlBatch(batchQuery, function() {
-			console.log('Update event OK');
-			//closeDB();
-			countEvent();
-			}, function(error) {
-			console.log('Update event ERROR: ' + error.message);
-			//closeDB();
-			});
+}
 	
 	
-	});
-	});	
-
-}
-
-
-function countEvent()
-{
-		var db = window.sqlitePlugin.openDatabase(db_params, function (db) {
-
-		db.transaction(function (tx) {
-			
-			db.executeSql('SELECT count(*) AS mycount FROM event', [], function(rs) {
-			console.log('Record count (expected to be 2): ' + rs.rows.item(0).mycount);
-			myApp.alert('Record count'  + rs.rows.item(0).mycount);
-			
-		}, function(error) {
-			console.log('SELECT SQL statement ERROR: ' + error.message);
-		});
-		});
-	});
-}
 
 
 
-function closeDB() {
-    db.close(function () {
-        console.log("DB closed!");
-    }, function (error) {
-        console.log("Error closing DB:" + error.message);
-    });
-}
+	
+	

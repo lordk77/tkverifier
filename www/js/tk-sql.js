@@ -1,38 +1,51 @@
-var db_params = { name: 'tkverifier.db', location: 'default' };
+
+	
+	var db_params = { name: 'tkverifier.db', location: 'default' };
 
 var db = null;
  
 document.addEventListener('deviceready', function() {
 	console.log('initDb ');
+	
   initDb();
 });
 
 function initDb()
 {
-	 db = window.sqlitePlugin.openDatabase(db_params, function (db) {
-
+	myApp.alert('Iccxxnbbitd2b');
+	
+	  window.sqlitePlugin.selfTest(function() {
+    myApp.alert('SELF test OK');
+  });
+	
+	db =window.sqlitePlugin.openDatabase({name: 'my.db', location: 'default'}, function (db) {
+myApp.alert('Initdddd3b');
 		db.transaction(function (tx) {
 			tx.executeSql('CREATE TABLE IF NOT EXISTS event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId, deletable)');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS ticketCategory (ticketCategoryUUID,description,price,currency, deletable)');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS ticket (ticketUUID,date)');
 		}, function (error) {
 			console.log('transaction error: ' + error.message);
+			myApp.alert('Initdb ko');
 			//closeDB();
 		}, function () {
 			console.log('transaction ok');
+			myApp.alert('Initdb ok');
+			fetchEvents(0);
 			//closeDB();
 		});
 
 	}, function (error) {
 		console.log('Open database ERROR: ' + JSON.stringify(error));
+		myApp.alert('Initdb error' + JSON.stringify(error));
 	});
+	
 }
 
 
 
 function fetchEvents(lastUpdate)
 {
-
 	  $.ajax({
         url: tkadminURL + "rest/event/search/"+(lastUpdate?lastUpdate:0),
         success: updateEvents
@@ -91,6 +104,8 @@ function countEvent()
 			
 			db.executeSql('SELECT count(*) AS mycount FROM event', [], function(rs) {
 			console.log('Record count (expected to be 2): ' + rs.rows.item(0).mycount);
+			myApp.alert('Record count'  + rs.rows.item(0).mycount);
+			
 		}, function(error) {
 			console.log('SELECT SQL statement ERROR: ' + error.message);
 		});
