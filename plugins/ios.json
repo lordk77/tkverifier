@@ -16,11 +16,11 @@
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "io.ticketcoin.tkverifier"
     },
-    "phonegap-plugin-barcodescanner": {
-      "CAMERA_USAGE_DESCRIPTION": " ",
+    "cordova-sqlite-storage": {
       "PACKAGE_NAME": "io.ticketcoin.tkverifier"
     },
-    "cordova-sqlite-storage": {
+    "phonegap-plugin-barcodescanner": {
+      "CAMERA_USAGE_DESCRIPTION": " ",
       "PACKAGE_NAME": "io.ticketcoin.tkverifier"
     }
   },

@@ -6,6 +6,12 @@
   "version": "io.ticketcoin.tkverifier",
   "description": "A basic Framework7 template for PhoneGap.",
   "author": "Apache Cordova Team",
-  "icons": [],
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "undefinedxundefined"
+    }
+  ],
   "start_url": "index.html"
 }

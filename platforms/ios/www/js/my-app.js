@@ -1,7 +1,7 @@
 // Initialize app
 var myApp = new Framework7();
 
-var tkadminURL="http://10.1.0.27:8080/tkadmin";
+var tkadminURL="http://192.168.1.111:8080/tkadmin/";
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
@@ -49,6 +49,13 @@ console.log(data);
         url: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",
         success: handleResult
     });
+    
+    		$.ajax({
+			type: "GET",
+			url: tkadminURL + "rest/event/list/0",
+			dataType: 'jsonp',
+			success: updateEvents
+		});
 })
 
 
@@ -86,14 +93,13 @@ console.log(data);
 
     // Transaction error callback
     //
-    function errorCB(tx, err) {
-        myApp.alert("Error processing SQL: "+err);
+    function errorCB(err) {
+        myApp.alert("Error processing SQL: "+err.message);
     }
 
     // Transaction success callback
     //
     function successCB() {
-        myApp.alert("success!");
 		fetchData();
     }
 	
@@ -101,7 +107,9 @@ console.log(data);
 	function fetchData()
 	{
 		$.ajax({
-			url: tkadminURL + "rest/event/search/0",
+			type: "GET",
+			url: tkadminURL + "rest/event/list/0",
+			dataType: 'json',
 			success: updateEvents
 		});
 	}	
@@ -110,38 +118,69 @@ console.log(data);
 	
 	function updateEvents(result)
 	{
+		console.log("updateEvents");
 	    var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
-        db.transaction(_updateEvents, result, errorCB, successCB);
+        db.transaction(
+        function _updateEvents(tx)
+		{
+			var batchQuery = [];
+	
+			tx.executeSql('UPDATE event set deletable = 1');
+			tx.executeSql('UPDATE ticketCategory set deletable = 1');
+
+			for(var i =0; i < result.length; i++)
+			{
+				
+				
+				var eventUUID = result[i].eventUUID ? result[i].eventUUID : null;
+				var name = result[i].name ? result[i].name : null;
+				var description = result[i].description ? result[i].description : '';
+				var imageUUID = result[i].imageUUID ? result[i].imageUUID : '';
+				var artist = result[i].artist ? result[i].artist : '';
+				var updatedOn = result[i].updatedOn ? result[i].updatedOn : '';
+				var organizationId = result[i].organizationId ? result[i].organizationId : '';
+					
+				
+				tx.executeSql('INSERT INTO event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId) values (?,?,?,?,?,?,?)',[eventUUID,name,description,imageUUID,artist,updatedOn,organizationId]);
+			
+			
+				
+			
+				for(var j =0; result[i].ticketCategories && j < result[i].ticketCategories.length; j++)
+				{
+				
+					var ticketCategoryUUID = result[i].ticketCategories[j].ticketCategoryUUID ? result[i].ticketCategories[j].ticketCategoryUUID : null;
+					var description = result[i].ticketCategories[j].description ? result[i].ticketCategories[j].description : null;
+					var price = result[i].ticketCategories[j].price ? result[i].ticketCategories[j].price : null;
+					var currency = result[i].ticketCategories[j].currency ? result[i].ticketCategories[j].currency : null;
+		
+					tx.executeSql('INSERT INTO ticketCategory (ticketCategoryUUID,description,price,currency) values (?,?,?,?)',[ticketCategoryUUID,description,price,currency]);
+				}
+			}
+
+			tx.executeSql('DELETE FROM event where deletable = 1');
+			tx.executeSql('DELETE FROM ticketCategory where deletable = 1');
+
+			tx.executeSql('SELECT * FROM event', [], querySuccess, errorCB);
+			tx.executeSql('SELECT * FROM ticketCategory', [], querySuccess, errorCB);
+	
+
+		},
+		errorCB
+		
+        
+
+       );
 	}
 	
 	
-	function _updateEvents(tx, result)
-	{
-	
-		var batchQuery = [];
-	
-		tx.executeSql('UPDATE event set deletable = 1');
-		tx.executeSql('UPDATE ticketCategory set deletable = 1');
+	function querySuccess(tx, results) {
 
-		for(var i =0; i < result.length; i++)
-		{
-			tx.executeSql(['INSERT INTO event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId) values (?,?,?,?,?,?)',[result[i].eventUUID,result[i].name,result[i].description,result[i].imageUUID,result[i].artist,result[i].updatedOn,result[i].organizationId]]);
-			
-			for(var j =0; result[i].ticketCategories && j < result[i].ticketCategories; j++)
-			{
-				tx.executeSql(['INSERT INTO ticketCategory (ticketCategoryUUID,description,price,currency) values (?,?,?,?)',[result[i][j].ticketCategoryUUID,result[i][j].description,result[i][j].price,result[i][j].currency]]);
-			}
-		}
-
-		tx.executeSql('DELETE FROM event where deletable = 1');
-		tx.executeSql('DELETE FROM ticketCategory where deletable = 1');
+    	myApp.alert("Inserted  " + results.rows.length + " rows");
+	}
 	
-		myApp.alert("success!!!!!!");
+	
 		
-
-}
-	
-	
 
 
 
