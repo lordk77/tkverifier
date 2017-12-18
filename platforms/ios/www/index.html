@@ -111,37 +111,10 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
     <script type="text/javascript" src="js/my-app.js"></script>
-<script type="text/javascript" src="js/scanner.js"></script>
+
 
 <script>
-    //if(localStorage.getItem("LocalData") == null)
-		{
-			var data = ['pippo','pluto'];
-    		data = JSON.stringify(data);
-    		localStorage.setItem("LocalData", data);
-		}
-		
-		    var data = localStorage.getItem("LocalData");
-    console.log(data);
-    
-    
-    
-    
-</script>
-<script>
-/*
-  $.ajax({
-        url: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",
-        success: handleResult
-    });
 
-
-    function handleResult(result){
-        console.log( result.url);
-
-       
-    }
-    */
 function openURL(url)
 {
     window.open(url, '_blank', 'location=yes');

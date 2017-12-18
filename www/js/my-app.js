@@ -14,9 +14,7 @@ var mainView = myApp.addView('.view-main', {
 
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
-    
-
-    console.log("Device is readyzz!");
+    console.log("Device is ready!");
 });
 
 
@@ -28,48 +26,41 @@ myApp.onPageInit('about', function (page) {
 
 })
 
-myApp.onPageInit('display', function (page) {
-   $("table#allTable tbody").empty();
 
-    var data = localStorage.getItem("LocalData");
-    console.log(data);
-    data = JSON.parse(data);
-console.log(data);
-    var html = "";
 
-    for(var count = 0; count < data.length; count++)
+	//***********************************************************************************
+	//* SCANNER SECTION
+	//***********************************************************************************
+
+    function scan()
     {
-        html = html + "<tr><td>" + data[count][0] + "</td><td><a href='javascript:openURL(\"" + data[count][1] + "\")'>" + data[count][1] + "</a></td></tr>";
-    }
+        cordova.plugins.barcodeScanner.scan(
+        function (result) {
+            if(!result.cancelled)
+            {
+                if(result.format == "QR_CODE")
+                {
+					
+					var ticketInfo = JSON.parse(result.text);
+					spendTicket(ticketInfo.ticketUUID)
+					//loop back to scanner
+					scan();
+                    
+                }
+            }
+        },
+        function (error) {
+            alert("Scanning failed: " + error);
+        }
+   );}
+   
 
-    $("table#allTable tbody").append(html);
-    
-    
-         $.ajax({
-        url: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",
-        success: handleResult
-    });
-    
-    		$.ajax({
-			type: "GET",
-			url: tkadminURL + "rest/event/list/0",
-			dataType: 'jsonp',
-			success: updateEvents
-		});
-})
 
-
-
-    function handleResult(result){
-        console.log( result.url);
-        $(".guguImage").attr('src', result.url);
-    }
-
-	
-	
+	//***********************************************************************************
+	//* DB SECTION
+	//***********************************************************************************
 	
 	// Wait for PhoneGap to load
-    //
     document.addEventListener("deviceready", onDeviceReady, false);
 
 
@@ -77,7 +68,7 @@ console.log(data);
     //
     function onDeviceReady() {
         var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
-        db.transaction(createDB, errorCB, successCB);
+        db.transaction(createDB, errorCB, createDBsuccessCB);
     }
 
     // Populate the database 
@@ -88,22 +79,18 @@ console.log(data);
 		tx.executeSql('DROP TABLE IF EXISTS ticket');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId, deletable)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS ticketCategory (ticketCategoryUUID,description,price,currency, deletable)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS ticket (ticketUUID,date)');	
+		tx.executeSql('CREATE TABLE IF NOT EXISTS ticket (ticketUUID, date)');	
     }
 
-    // Transaction error callback
+	// Transaction success callback
     //
-    function errorCB(err) {
-        myApp.alert("Error processing SQL: "+err.message);
-    }
-
-    // Transaction success callback
-    //
-    function successCB() {
+    function createDBsuccessCB() {
 		fetchData();
     }
 	
-
+	
+	//Fetches data from service
+	//
 	function fetchData()
 	{
 		$.ajax({
@@ -112,9 +99,8 @@ console.log(data);
 			dataType: 'json',
 			success: updateEvents
 		});
-	}	
-
-
+	}
+	
 	
 	function updateEvents(result)
 	{
@@ -174,9 +160,44 @@ console.log(data);
 	}
 	
 	
+	function spendTicket(ticketUUID)
+	{
+	    var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+        db.transaction(
+		function _spendTicket(tx)
+		{
+			tx.executeSql('SELECT * FROM ticket where ticketUUID = ?', [ticketUUID], 
+			
+			function _querySuccess(tx, results)
+			{
+				if(results.rows.length==0)
+				{
+
+					tx.executeSql('INSERT INTO ticket (ticketUUID, date) values (?,?)',[ticketUUID, new Date()]);
+					 myApp.alert("Access granted");
+				}
+				else
+				{
+					myApp.alert("Ticket Spent on " + results.rows.item(0).date);
+				}
+				
+			}
+			, errorCB);
+
+		});
+	}
+	
+	
+	
+	// Transaction error callback
+    function errorCB(err) {
+        myApp.alert("Error processing SQL: "+err.message);
+    }
+	
+	
 	function querySuccess(tx, results) {
 
-    	myApp.alert("Inserted  " + results.rows.length + " rows");
+    	//myApp.alert("Inserted  " + results.rows.length + " rows");
 	}
 	
 	
