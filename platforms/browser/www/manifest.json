@@ -4,8 +4,8 @@
   "name": "tkverifier",
   "short_name": "tkverifier",
   "version": "io.ticketcoin.tkverifier",
-  "description": "A basic Framework7 template for PhoneGap.",
-  "author": "Apache Cordova Team",
+  "description": "Ticket Coin Verifier.",
+  "author": "TicketCoin.io",
   "icons": [
     {
       "src": "logo.png",

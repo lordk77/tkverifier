@@ -1,30 +1,29 @@
-// Initialize app
-var myApp = new Framework7();
+	// Initialize app
+	var myApp = new Framework7();
 
-var tkadminURL="http://192.168.1.111:8080/tkadmin/";
+	var tkadminURL="http://192.168.1.111:8080/tkadmin/";
 
-// If we need to use custom DOM library, let's save it to $$ variable:
-var $$ = Dom7;
+	
+	
+	// If we need to use custom DOM library, let's save it to $$ variable:
+	var $$ = Dom7;
 
-// Add view
-var mainView = myApp.addView('.view-main', {
-    // Because we want to use dynamic navbar, we need to enable it for this view:
-    dynamicNavbar: true
-});
+	// Add view
+	var mainView = myApp.addView('.view-main', {
+		// Because we want to use dynamic navbar, we need to enable it for this view:
+		dynamicNavbar: true
+	});
 
-// Handle Cordova Device Ready Event
-$$(document).on('deviceready', function() {
-    console.log("Device is ready!");
-});
+	// Handle Cordova Device Ready Event
+	$$(document).on('deviceready', function() {
+		console.log("Device is ready!");
+	});
 
 
-// Now we need to run the code that will be executed only for About page.
-
-// Option 1. Using page callback for page (for "about" page in this case) (recommended way):
-myApp.onPageInit('about', function (page) {
-    // Do something here for "about" page
-
-})
+	// Now we need to run the code that will be executed only for About page.
+	myApp.onPageInit('info', function (page) {
+		//myApp.alert("Access granted","Message");
+	})
 
 
 
@@ -55,6 +54,9 @@ myApp.onPageInit('about', function (page) {
    );}
    
 
+   
+   
+   
 
 	//***********************************************************************************
 	//* DB SECTION
@@ -76,7 +78,7 @@ myApp.onPageInit('about', function (page) {
     function createDB(tx) {
 		tx.executeSql('DROP TABLE IF EXISTS event');
 		tx.executeSql('DROP TABLE IF EXISTS ticketCategory');
-		tx.executeSql('DROP TABLE IF EXISTS ticket');
+		//tx.executeSql('DROP TABLE IF EXISTS ticket');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS event (eventUUID,name,description,imageUUID,artist,updatedOn,organizationId, deletable)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS ticketCategory (ticketCategoryUUID,description,price,currency, deletable)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS ticket (ticketUUID, date)');	
@@ -174,11 +176,11 @@ myApp.onPageInit('about', function (page) {
 				{
 
 					tx.executeSql('INSERT INTO ticket (ticketUUID, date) values (?,?)',[ticketUUID, new Date()]);
-					 myApp.alert("Access granted");
+					 myApp.alert("Access granted","Message");
 				}
 				else
 				{
-					myApp.alert("Ticket Spent on " + results.rows.item(0).date);
+					myApp.alert("Ticket Spent on " + results.rows.item(0).date,"Alert");
 				}
 				
 			}
@@ -191,7 +193,7 @@ myApp.onPageInit('about', function (page) {
 	
 	// Transaction error callback
     function errorCB(err) {
-        myApp.alert("Error processing SQL: "+err.message);
+        myApp.alert("Error processing SQL: "+err.message,"Error");
     }
 	
 	

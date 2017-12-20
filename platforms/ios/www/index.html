@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
-
+	<link rel="stylesheet" href="lib/framework7/css/framework7-icons.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -54,7 +54,7 @@
             <div class="navbar">
                 <div class="navbar-inner">
                     <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
-                    <div class="center sliding">Awesome App</div>
+                    <div class="center sliding">Ticket Coin Verifier</div>
                     <div class="right">
                         <!--
                           Right link contains only icon - additional "icon-only" class
@@ -75,36 +75,31 @@
                             <!-- Link to another page -->
 
 
-    <div data-role="main" class="ui-content">
-        <p>
-            <a target="_blank" href="javascript:scan();" style="text-decoration: none" id="scanBtn"><button>Scan</button></a>
-            <a target="_blank" href="display.html" style="text-decoration: none"><button>Display Scanned Data</button></a>
-        </p>
-    </div>
-    
-    
-    <table data-role="table" data-mode="column" id="allTable" class="ui-responsive table-stroke">
-            		<thead>
-                		<tr>
-                    		<th>Name</th>
-                    		<th>Value</th>
-                		</tr>
-            		</thead>
-            		<tbody>
-            		</tbody>
-        		</table>
+							<div data-role="main" class="ui-content">
+								<p>
+								 	<a href="javascript:scan();" class="button button-round">Verify ticket</a>
+								</p>
+							</div>
+						
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Bottom Toolbar-->
-            <div class="toolbar">
-                <div class="toolbar-inner">
-                    <!-- Toolbar links -->
-                    <a href="#" class="link">Link 1</a>
-                    <a href="#" class="link">Link 2</a>
-                </div>
-            </div>
+            <div class="toolbar tabbar">
+				<div class="toolbar-inner">
+					<a href="#tab2" class="tab-link">
+						<i class="f7-icons">gear</i>
+					</a>				
+					<a href="index.html" class="link no-animation">
+						<i class="f7-icons">home</i>
+					</a>
+					<a href="info.html" target="_blank" class="link">
+						<i class="f7-icons">info</i>
+					</a>
+
+				</div>
+			</div>
         </div>
     </div>
     	<script src="js/jquery-2.1.4.min.js"></script>
