@@ -39,11 +39,19 @@
             {
                 if(result.format == "QR_CODE")
                 {
-					
-					var ticketInfo = JSON.parse(result.text);
-					spendTicket(ticketInfo.ticketUUID)
-					//loop back to scanner
-					scan();
+					try
+					{
+						var ticketInfo = JSON.parse(result.text);
+						if(ticketInfo && ticketInfo.ticketUUID){
+							spendTicket(ticketInfo.ticketUUID)
+						}
+						else
+							myApp.alert("Wrong code","Error", scan);
+					}
+					catch(Ex)
+					{
+						myApp.alert("Wrong code","Error", scan);
+					}
                     
                 }
             }
@@ -176,11 +184,11 @@
 				{
 
 					tx.executeSql('INSERT INTO ticket (ticketUUID, date) values (?,?)',[ticketUUID, new Date()]);
-					 myApp.alert("Access granted","Message");
+					 myApp.alert("Access granted","Message",scan);
 				}
 				else
 				{
-					myApp.alert("Ticket Spent on " + results.rows.item(0).date,"Alert");
+					myApp.alert("Ticket Spent on " + results.rows.item(0).date,"Alert", scan);
 				}
 				
 			}

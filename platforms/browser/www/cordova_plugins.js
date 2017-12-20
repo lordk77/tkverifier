@@ -29,6 +29,20 @@ module.exports = [
         "clobbers": [
             "SQLitePlugin"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+        "id": "cordova-plugin-splashscreen.SplashScreen",
+        "pluginId": "cordova-plugin-splashscreen",
+        "clobbers": [
+            "navigator.splashscreen"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-splashscreen/src/browser/SplashScreenProxy.js",
+        "id": "cordova-plugin-splashscreen.SplashScreenProxy",
+        "pluginId": "cordova-plugin-splashscreen",
+        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -38,7 +52,8 @@ module.exports.metadata =
     "cordova-plugin-console": "1.0.7",
     "cordova-plugin-statusbar": "1.0.1",
     "phonegap-plugin-barcodescanner": "7.0.0",
-    "cordova-sqlite-storage": "2.1.3"
+    "cordova-sqlite-storage": "2.1.3",
+    "cordova-plugin-splashscreen": "4.1.0"
 }
 // BOTTOM OF METADATA
 });

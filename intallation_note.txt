@@ -1,0 +1,2 @@
+$ npm install splashicon-generator -g
+$ splashicon-generator

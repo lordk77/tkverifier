@@ -21,6 +21,9 @@
     },
     "cordova-sqlite-storage": {
       "PACKAGE_NAME": "io.ticketcoin.tkverifier"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "io.ticketcoin.tkverifier"
     }
   },
   "dependent_plugins": {}

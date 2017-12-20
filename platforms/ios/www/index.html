@@ -31,6 +31,41 @@
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
 	<link rel="stylesheet" href="lib/framework7/css/framework7-icons.css">
     <link rel="stylesheet" href="css/styles.css">
+	
+	<style>
+	  .facebook-card .card-header {
+		display: block;
+		padding: 10px;
+	  }
+	  .facebook-card .facebook-avatar {
+		float: left;
+	  }
+	  .facebook-card .facebook-name {
+		margin-left: 44px;
+		font-size: 14px;
+		font-weight: 500;
+	  }
+	  .facebook-card .facebook-date {
+		margin-left: 44px;
+		font-size: 13px;
+		color: #8e8e93;
+	  }
+	  .facebook-card .card-footer {
+		background: #fafafa;
+	  }
+	  .facebook-card .card-footer a {
+		color: #81848b;
+		font-weight: 500;
+	  }
+	  .facebook-card .card-content img {
+		display: block;
+	  }
+	  .facebook-card .card-content-inner {
+		padding: 15px 10px;
+	  }  
+	</style>
+
+
 </head>
 
 <body>
@@ -70,19 +105,27 @@
                 <div data-page="index" class="page">
                     <!-- Scrollable page content -->
                     <div class="page-content">
-                        <div class="content-block">
-                            <p>Page content goes here</p>
-                            <!-- Link to another page -->
-
-
-							<div data-role="main" class="ui-content">
-								<p>
-								 	<a href="javascript:scan();" class="button button-round">Verify ticket</a>
-								</p>
-							</div>
-						
+					
+						<div class="content-block">
+							<h1>Museum event</h1>
                         </div>
-                    </div>
+						
+						<div class="card facebook-card">
+						  <div class="card-header no-border">
+							<div class="facebook-avatar"><img src="..." width="34" height="34"></div>
+							<div class="facebook-name">John Doe</div>
+							<div class="facebook-date">Monday at 3:47 PM</div>
+						  </div>
+						  <div class="card-content">
+							<div class="card-content-inner">
+							</div>
+						  </div>
+						  <div class="card-footer no-border">
+							<a href="javascript:scan();" class="button button-round" style="width:100%">Verify ticket</a>
+						  </div>
+						</div>
+						
+					</div>
                 </div>
             </div>
             <!-- Bottom Toolbar-->
@@ -97,7 +140,6 @@
 					<a href="info.html" target="_blank" class="link">
 						<i class="f7-icons">info</i>
 					</a>
-
 				</div>
 			</div>
         </div>

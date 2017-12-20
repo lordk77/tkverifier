@@ -12,13 +12,15 @@
       "cordova-plugin-console": {},
       "cordova-plugin-statusbar": {},
       "phonegap-plugin-barcodescanner": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-splashscreen": {}
     }
   },
   "dependencies": {
     "cordova-browser": "~5.0.1",
     "cordova-ios": "^4.4.0",
     "cordova-plugin-console": "~1.0.1",
+    "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-statusbar": "~1.0.1",
     "cordova-plugin-whitelist": "~1.2.0",
     "cordova-sqlite-storage": "^2.1.3",
