@@ -2,10 +2,10 @@
 <widget id="io.ticketcoin.tkverifier" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>tkverifier</name>
     <description>
-        Ticket Coin Verifier.
+        Ticket Coin Verifier
     </description>
     <author email="ticketcoin@ticketcoin.io" href="http://ticketcoin.io">
-        TicketCoin.io
+        TicketCoin.io
     </author>
     <content src="index.html" />
     <access origin="*" />
